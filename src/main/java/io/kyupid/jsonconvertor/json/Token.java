@@ -3,6 +3,7 @@ package io.kyupid.jsonconvertor.json;
 public enum Token {
     LEFT_BRACE("{"),
     RIGHT_BRACE("}"),
+    DOUBLE_QUOTES("\""),
     LEFT_BRACKET("["),
     RIGHT_BRACKET("]"),
     COLON(":"),
