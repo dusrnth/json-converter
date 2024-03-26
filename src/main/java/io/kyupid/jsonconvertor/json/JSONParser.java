@@ -9,10 +9,6 @@ public class JSONParser {
         
     }
 
-    private TokenType getTokenType() {
-        
-    }
-
     private Map<String, Object> parseObject() {
         
     }
