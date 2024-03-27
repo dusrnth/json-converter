@@ -12,9 +12,7 @@ public final class TokenUtils {
         }
     }
 
-    private TokenUtils() {
-        // 인스턴스화 방지
-    }
+    private TokenUtils() {}
 
     public static TokenType getTokenType(char c) {
         return CHAR_TO_TOKEN_TYPE.get(c);
@@ -24,6 +22,7 @@ public final class TokenUtils {
         if (type == TokenType.STRING || type == TokenType.NUMBER) {
             return new Token(type, value);
         }
+        // todo 나머지 타입 토큰들은 막을 것인가?
         return new Token(type, null);
     }
 }
