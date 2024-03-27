@@ -2,8 +2,6 @@ package io.kyupid.jsonconvertor.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.kyupid.jsonconvertor.model.CsvData;
-import io.kyupid.jsonconvertor.model.JsonData;
 
 import java.io.FileWriter;
 import java.io.IOException;

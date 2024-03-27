@@ -16,4 +16,8 @@ public final class Token {
     public String getValue() {
         return value;
     }
+
+    public boolean isEndOfString() {
+        return type == TokenType.END_OF_STRING;
+    }
 }

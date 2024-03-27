@@ -1,7 +1,6 @@
 package io.kyupid.jsonconvertor.util;
 
 import io.kyupid.jsonconvertor.exception.InvalidJsonException;
-import io.kyupid.jsonconvertor.model.JsonData;
 
 public class DataValidator {
     public static void validateJsonData(JsonData jsonData) throws InvalidJsonException {
