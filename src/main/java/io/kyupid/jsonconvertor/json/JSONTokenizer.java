@@ -17,7 +17,7 @@ class JSONTokenizer {
         this.pos = 0;
     }
 
-    List<Token> tokenize() throws InvalidJsonException {
+    List<Token> tokenize() {
         List<Token> tokens = new ArrayList<>();
 
         while (pos < json.length()) {
@@ -29,23 +29,20 @@ class JSONTokenizer {
             }
 
             switch (tokenType) {
-                case STRING:
+                case DOUBLE_QUOTES:
                     tokens.add(readString());
                     break;
-                case NUMBER:
-                    tokens.add(readNumber());
-                    break;
-                case TRUE:
-                    tokens.add(readKeyword("true", TokenType.TRUE));
-                    break;
-                case FALSE:
-                    tokens.add(readKeyword("false", TokenType.FALSE));
-                    break;
-                case NULL:
-                    tokens.add(readKeyword("null", TokenType.NULL));
+                case LEFT_BRACE:
+                case LEFT_BRACKET:
+                case COMMA:
+                case COLON:
+                case RIGHT_BRACE:
+                case RIGHT_BRACKET:
+                    tokens.add(TokenUtils.createToken(tokenType, null));
                     break;
                 default:
-                    tokens.add(TokenUtils.createToken(tokenType, null));
+                    pos--;
+                    tokens.add(readValue());
                     break;
             }
         }
@@ -76,10 +73,33 @@ class JSONTokenizer {
     private char processEscapeChar() {
     }
 
+    private Token readValue() {
+        char currentChar = json.charAt(pos);
+
+        if (currentChar == '\"') {
+            pos++;
+            return readString();
+        } else if (Character.isDigit(currentChar) || currentChar == '-') {
+            return readNumber();
+        } else if (currentChar == 't') {
+            return readKeyword("true", TokenType.TRUE);
+        } else if (currentChar == 'f') {
+            return readKeyword("false", TokenType.FALSE);
+        } else if (currentChar == 'n') {
+            return readKeyword("null", TokenType.NULL);
+        } else if (currentChar == '{') {
+            return TokenUtils.createToken(TokenType.LEFT_BRACE, null);
+        } else if (currentChar == '[') {
+            return TokenUtils.createToken(TokenType.LEFT_BRACKET, null);
+        } else {
+            throw new InvalidJsonException("Unexpected character: " + currentChar);
+        }
+    }
+
     private Token readNumber() {
     }
 
-    private Token readKeyword(String keyword, TokenType tokenType) throws InvalidJsonException {
+    private Token readKeyword(String keyword, TokenType tokenType) {
         for (int i = 1; i < keyword.length(); i++) {
             if (nextChar() != keyword.charAt(i)) {
                 throw new InvalidJsonException("Invalid keyword: " + keyword);
