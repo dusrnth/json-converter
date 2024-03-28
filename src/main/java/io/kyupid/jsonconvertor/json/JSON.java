@@ -1,5 +1,6 @@
 package io.kyupid.jsonconvertor.json;
 
+import io.kyupid.jsonconvertor.exception.InvalidJsonException;
 import io.kyupid.jsonconvertor.json.token.Token;
 
 import java.util.List;
@@ -9,16 +10,14 @@ public class JSON {
 
     private List<Token> tokens;
 
-    public JSON(String json) {
+    public JSON(String json) throws InvalidJsonException {
         JSONTokenizer tokenizer = new JSONTokenizer(json);
         this.tokens = tokenizer.tokenize();
     }
 
-    // 적절한 자료구조로 return 한다.
-    // 미리 정의한 객체로 return or Map ?
-    // 아니다. 객체는 Map 으로, 배열은 List 로 반환하고,
-    // 특정 데이터 타입이 필요하면 그건 캐스팅하는 애를 따로 두고 하자.
+    // 객체는 Map 으로, 배열은 List 로 반환하고,
     public Object parse() {
+
         return null;
     }
 
