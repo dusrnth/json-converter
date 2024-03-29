@@ -29,7 +29,7 @@ class JSONTokenizerTest {
         String json = "{\"name\":\"John\",\"age\":30,\"city\":\"New York\"}";
         JSONTokenizer tokenizer = new JSONTokenizer(json);
         List<Token> tokens = tokenizer.tokenize();
-        assertThat(tokens).hasSize(9)
+        assertThat(tokens).hasSize(13)
                 .extracting(Token::getType)
                 .containsExactly(
                         TokenType.LEFT_BRACE,
