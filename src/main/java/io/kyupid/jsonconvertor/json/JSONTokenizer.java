@@ -81,6 +81,17 @@ class JSONTokenizer {
     }
 
     private char processEscapeChar() {
+        char escapedChar = nextChar();
+        return switch (escapedChar) {
+            case '\"', '\\', '/' -> escapedChar;
+            case 'b' -> '\b';
+            case 'f' -> '\f';
+            case 'n' -> '\n';
+            case 'r' -> '\r';
+            case 't' -> '\t';
+            case 'u' -> throw new UnsupportedOperationException("Unicode escapes are not supported yet.");
+            default -> throw new InvalidJsonException("Invalid escape sequence: \\" + escapedChar);
+        };
     }
 
     private Token readValue() {
@@ -107,6 +118,7 @@ class JSONTokenizer {
     }
 
     private Token readNumber() {
+        return null;
     }
 
     private Token readKeyword(String keyword, TokenType tokenType) {
