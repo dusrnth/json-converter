@@ -21,137 +21,104 @@ class JSONTokenizer {
         List<Token> tokens = new ArrayList<>();
 
         while (pos < json.length()) {
-            char currentChar = nextChar();
-            if (pos == 1 && (currentChar != '{' && currentChar != '[')) {
-                throw new InvalidJsonException("JSON must start with '{' or '['");
-            }
+            char currentChar = json.charAt(pos);
 
-            TokenType tokenType = TokenUtils.getTokenType(currentChar);
-
-            if (tokenType == null) {
-                throw new InvalidJsonException("Invalid character: " + currentChar);
-            }
-
-            switch (tokenType) {
-                case DOUBLE_QUOTES:
-                    tokens.add(readString());
-                    break;
-                case LEFT_BRACE:
-                case LEFT_BRACKET:
-                case COMMA:
-                case COLON:
-                case RIGHT_BRACE:
-                case RIGHT_BRACKET:
-                    tokens.add(TokenUtils.createToken(tokenType, null));
-                    break;
-                default:
-                    pos--;
-                    tokens.add(readValue());
-                    break;
+            if (currentChar == '{') {
+                tokens.add(new Token(TokenType.LEFT_BRACE, null, null));
+                pos++;
+            } else if (currentChar == '}') {
+                tokens.add(new Token(TokenType.RIGHT_BRACE, null, null));
+                pos++;
+            } else if (currentChar == '[') {
+                tokens.add(new Token(TokenType.LEFT_BRACKET, null, null));
+                pos++;
+            } else if (currentChar == ']') {
+                tokens.add(new Token(TokenType.RIGHT_BRACKET, null, null));
+                pos++;
+            } else if (currentChar == ':') {
+                tokens.add(new Token(TokenType.COLON, null, null));
+                pos++;
+            } else if (currentChar == ',') {
+                tokens.add(new Token(TokenType.COMMA, null, null));
+                pos++;
+            } else if (currentChar == '"') {
+                pos++;
+                Token token = readString();
+                tokens.add(token);
+            } else if (Character.isDigit(currentChar) || currentChar == '-') {
+                Token token = readNumber();
+                tokens.add(token);
+            } else if (currentChar == 't' || currentChar == 'f') {
+                Token token = readBoolean();
+                tokens.add(token);
+            } else if (currentChar == 'n') {
+                Token token = readNull();
+                tokens.add(token);
+            } else if (Character.isWhitespace(currentChar)) {
+                pos++;
+            } else {
+                throw new InvalidJsonException("Unexpected character: " + currentChar);
             }
         }
 
-        Token lastToken = tokens.get(tokens.size() - 1);
-        if (lastToken.getType() != TokenType.RIGHT_BRACE && lastToken.getType() != TokenType.RIGHT_BRACKET) {
-            throw new InvalidJsonException("JSON must end with '}' or ']'");
-        }
-
-
-        tokens.add(TokenUtils.createToken(TokenType.END_OF_STRING, null));
         return tokens;
-    }
-
-    private char nextChar() {
-        return json.charAt(pos++);
     }
 
     private Token readString() {
         StringBuilder sb = new StringBuilder();
-        char currentChar = nextChar();
-
-        while (currentChar != '\"') {
-            if (pos == json.length()) {
-                throw new InvalidJsonException("Unterminated string: missing closing quote");
-            }
-            if (currentChar == '\\') {
-                currentChar = processEscapeChar();
-            }
-            sb.append(currentChar);
-            currentChar = nextChar();
-        }
-
-        return TokenUtils.createToken(TokenType.STRING, sb.toString());
-    }
-
-    private char processEscapeChar() {
-        char escapedChar = nextChar();
-        return switch (escapedChar) {
-            case '\"', '\\', '/' -> escapedChar;
-            case 'b' -> '\b';
-            case 'f' -> '\f';
-            case 'n' -> '\n';
-            case 'r' -> '\r';
-            case 't' -> '\t';
-            case 'u' -> throw new UnsupportedOperationException("Unicode escapes are not supported yet.");
-            default -> throw new InvalidJsonException("Invalid escape sequence: \\" + escapedChar);
-        };
-    }
-
-    private Token readValue() {
         char currentChar = json.charAt(pos);
 
-        if (currentChar == '\"') {
+        while (currentChar != '"') {
+            if (currentChar == '\\') {
+                pos++;
+                currentChar = json.charAt(pos);
+                // 이스케이프 문자 처리 로직 추가
+            }
+            sb.append(currentChar);
             pos++;
-            return readString();
-        } else if (Character.isDigit(currentChar) || currentChar == '-') {
-            return readNumber();
-        } else if (currentChar == 't') {
-            return readKeyword("true", TokenType.TRUE);
-        } else if (currentChar == 'f') {
-            return readKeyword("false", TokenType.FALSE);
-        } else if (currentChar == 'n') {
-            return readKeyword("null", TokenType.NULL);
-        } else if (currentChar == '{') {
-            return TokenUtils.createToken(TokenType.LEFT_BRACE, null);
-        } else if (currentChar == '[') {
-            return TokenUtils.createToken(TokenType.LEFT_BRACKET, null);
-        } else {
-            throw new InvalidJsonException("Unexpected character '" + currentChar + "' at position " + pos);
+            if (pos >= json.length()) {
+                throw new InvalidJsonException("Unterminated string");
+            }
+            currentChar = json.charAt(pos);
         }
+        pos++;
+        return new Token(TokenType.STRING, null, sb.toString());
     }
 
     private Token readNumber() {
         StringBuilder sb = new StringBuilder();
         char currentChar = json.charAt(pos);
 
-        while (Character.isDigit(currentChar) || currentChar == '.' || currentChar == '-' || currentChar == '+' || currentChar == 'e' || currentChar == 'E') {
+        while (Character.isDigit(currentChar) || currentChar == '.' || currentChar == 'e' || currentChar == 'E' || currentChar == '-' || currentChar == '+') {
             sb.append(currentChar);
             pos++;
-            if (pos == json.length()) {
+            if (pos >= json.length()) {
                 break;
             }
             currentChar = json.charAt(pos);
         }
 
-        String numberStr = sb.toString();
-        try {
-            double number = Double.parseDouble(numberStr);
-            if (number > Double.MAX_VALUE || number < -Double.MAX_VALUE) {
-                throw new InvalidJsonException("Number out of range: " + numberStr);
-            }
-        } catch (NumberFormatException e) {
-            throw new InvalidJsonException("Invalid number format: " + numberStr);
-        }
-
-        return TokenUtils.createToken(TokenType.NUMBER, numberStr);
+        return new Token(TokenType.NUMBER, null, sb.toString());
     }
 
-    private Token readKeyword(String keyword, TokenType tokenType) {
-        for (int i = 1; i < keyword.length(); i++) {
-            if (nextChar() != keyword.charAt(i)) {
-                throw new InvalidJsonException("Invalid keyword. Expected: " + keyword + ", Found: " + json.substring(pos - 1, pos + keyword.length() - 1));
-            }
+    private Token readBoolean() {
+        if (json.startsWith("true", pos)) {
+            pos += 4;
+            return new Token(TokenType.BOOLEAN, null, "true");
+        } else if (json.startsWith("false", pos)) {
+            pos += 5;
+            return new Token(TokenType.BOOLEAN, null, "false");
+        } else {
+            throw new InvalidJsonException("Invalid boolean value");
         }
-        return TokenUtils.createToken(tokenType, null);
+    }
+
+    private Token readNull() {
+        if (json.startsWith("null", pos)) {
+            pos += 4;
+            return new Token(TokenType.NULL, null, "null");
+        } else {
+            throw new InvalidJsonException("Invalid null value");
+        }
     }
 }
