@@ -116,7 +116,7 @@ class JSONTokenizer {
         } else if (currentChar == '[') {
             return TokenUtils.createToken(TokenType.LEFT_BRACKET, null);
         } else {
-            throw new InvalidJsonException("Unexpected character: " + currentChar);
+            throw new InvalidJsonException("Unexpected character '" + currentChar + "' at position " + pos);
         }
     }
 
@@ -139,7 +139,7 @@ class JSONTokenizer {
     private Token readKeyword(String keyword, TokenType tokenType) {
         for (int i = 1; i < keyword.length(); i++) {
             if (nextChar() != keyword.charAt(i)) {
-                throw new InvalidJsonException("Invalid keyword: " + keyword);
+                throw new InvalidJsonException("Invalid keyword. Expected: " + keyword + ", Found: " + json.substring(pos - 1, pos + keyword.length() - 1));
             }
         }
         return TokenUtils.createToken(tokenType, null);
