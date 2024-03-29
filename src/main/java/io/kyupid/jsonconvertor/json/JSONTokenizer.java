@@ -70,6 +70,9 @@ class JSONTokenizer {
         char currentChar = nextChar();
 
         while (currentChar != '\"') {
+            if (pos == json.length()) {
+                throw new InvalidJsonException("Unterminated string: missing closing quote");
+            }
             if (currentChar == '\\') {
                 currentChar = processEscapeChar();
             }
