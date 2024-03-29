@@ -135,14 +135,12 @@ class JSONTokenizer {
 
         String numberStr = sb.toString();
         try {
-            Double.parseDouble(numberStr);
+            double number = Double.parseDouble(numberStr);
+            if (number > Double.MAX_VALUE || number < -Double.MAX_VALUE) {
+                throw new InvalidJsonException("Number out of range: " + numberStr);
+            }
         } catch (NumberFormatException e) {
             throw new InvalidJsonException("Invalid number format: " + numberStr);
-        }
-
-        double number = Double.parseDouble(numberStr);
-        if (number > Double.MAX_VALUE || number < -Double.MAX_VALUE) {
-            throw new InvalidJsonException("Number out of range: " + numberStr);
         }
 
         return TokenUtils.createToken(TokenType.NUMBER, numberStr);
