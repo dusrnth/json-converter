@@ -118,7 +118,19 @@ class JSONTokenizer {
     }
 
     private Token readNumber() {
-        return null;
+        StringBuilder sb = new StringBuilder();
+        char currentChar = json.charAt(pos);
+
+        while (Character.isDigit(currentChar) || currentChar == '.' || currentChar == '-' || currentChar == '+' || currentChar == 'e' || currentChar == 'E') {
+            sb.append(currentChar);
+            pos++;
+            if (pos == json.length()) {
+                break;
+            }
+            currentChar = json.charAt(pos);
+        }
+
+        return TokenUtils.createToken(TokenType.NUMBER, sb.toString());
     }
 
     private Token readKeyword(String keyword, TokenType tokenType) {
