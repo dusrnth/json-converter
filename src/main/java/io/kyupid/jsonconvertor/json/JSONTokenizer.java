@@ -133,7 +133,19 @@ class JSONTokenizer {
             currentChar = json.charAt(pos);
         }
 
-        return TokenUtils.createToken(TokenType.NUMBER, sb.toString());
+        String numberStr = sb.toString();
+        try {
+            Double.parseDouble(numberStr);
+        } catch (NumberFormatException e) {
+            throw new InvalidJsonException("Invalid number format: " + numberStr);
+        }
+
+        double number = Double.parseDouble(numberStr);
+        if (number > Double.MAX_VALUE || number < -Double.MAX_VALUE) {
+            throw new InvalidJsonException("Number out of range: " + numberStr);
+        }
+
+        return TokenUtils.createToken(TokenType.NUMBER, numberStr);
     }
 
     private Token readKeyword(String keyword, TokenType tokenType) {
