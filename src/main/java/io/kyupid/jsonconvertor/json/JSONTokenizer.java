@@ -22,6 +22,10 @@ class JSONTokenizer {
 
         while (pos < json.length()) {
             char currentChar = nextChar();
+            if (pos == 1 && (currentChar != '{' && currentChar != '[')) {
+                throw new InvalidJsonException("JSON must start with '{' or '['");
+            }
+
             TokenType tokenType = TokenUtils.getTokenType(currentChar);
 
             if (tokenType == null) {
@@ -46,6 +50,12 @@ class JSONTokenizer {
                     break;
             }
         }
+
+        Token lastToken = tokens.get(tokens.size() - 1);
+        if (lastToken.getType() != TokenType.RIGHT_BRACE && lastToken.getType() != TokenType.RIGHT_BRACKET) {
+            throw new InvalidJsonException("JSON must end with '}' or ']'");
+        }
+
 
         tokens.add(TokenUtils.createToken(TokenType.END_OF_STRING, null));
         return tokens;
