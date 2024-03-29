@@ -9,7 +9,7 @@ public final class TokenUtils {
 
     static {
         for (TokenType type : TokenType.values()) {
-            CHAR_TO_TOKEN_TYPE.put(type.getChar(), type);
+            CHAR_TO_TOKEN_TYPE.put(type.getSymbol(), type);
         }
 
         // 기본 타입 토큰만 캐시 처리

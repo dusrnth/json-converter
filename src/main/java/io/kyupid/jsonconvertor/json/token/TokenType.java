@@ -15,13 +15,13 @@ public enum TokenType {
     NUMBER('0'),
     END_OF_STRING(Character.MIN_VALUE);
 
-    private final char c;
+    private final char symbol;
 
-    TokenType(char c) {
-        this.c = c;
+    TokenType(char symbol) {
+        this.symbol = symbol;
     }
 
-    public char getChar() {
-        return c;
+    public char getSymbol() {
+        return symbol;
     }
 }
