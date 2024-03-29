@@ -2,10 +2,12 @@ package io.kyupid.jsonconvertor.json.token;
 
 public final class Token {
     private final TokenType type;
+    private final String property;
     private final String value;
 
-    public Token(TokenType type, String value) {
+    public Token(TokenType type, String property, String value) {
         this.type = type;
+        this.property = property;
         this.value = value;
     }
 
@@ -13,11 +15,11 @@ public final class Token {
         return type;
     }
 
-    public String getValue() {
-        return value;
+    public String getProperty() {
+        return property;
     }
 
-    public boolean isEndOfString() {
-        return type == TokenType.END_OF_STRING;
+    public String getValue() {
+        return value;
     }
 }
