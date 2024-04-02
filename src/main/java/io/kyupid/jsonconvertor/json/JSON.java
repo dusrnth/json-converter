@@ -2,60 +2,126 @@ package io.kyupid.jsonconvertor.json;
 
 import io.kyupid.jsonconvertor.exception.InvalidJsonException;
 import io.kyupid.jsonconvertor.json.token.Token;
+import io.kyupid.jsonconvertor.json.token.TokenType;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 public class JSON {
+    private final List<Token> tokens;
 
-    private List<Token> tokens;
-
-    public JSON(String json) throws InvalidJsonException {
+    public JSON(String json) {
         JSONTokenizer tokenizer = new JSONTokenizer(json);
         this.tokens = tokenizer.tokenize();
     }
 
-    // 객체는 Map 으로, 배열은 List 로 반환하고,
     public Object parse() {
+        return parseValue();
+    }
 
-        return null;
+    private Object parseValue() {
+        Token currentToken = tokens.get(0);
+
+        switch (currentToken.getType()) {
+            case LEFT_BRACE:
+                return parseObject();
+            case LEFT_BRACKET:
+                return parseArray();
+            case STRING:
+                tokens.remove(0);
+                return currentToken.getValue();
+            case NUMBER:
+                tokens.remove(0);
+                return parseNumber(currentToken.getValue());
+            case BOOLEAN:
+                tokens.remove(0);
+                return parseBoolean(currentToken.getValue());
+            case NULL:
+                tokens.remove(0);
+                return null;
+            default:
+                throw new InvalidJsonException("Unexpected token: " + currentToken.getType());
+        }
     }
 
     private Map<String, Object> parseObject() {
-        return null;
+        Map<String, Object> object = new LinkedHashMap<>();
+        tokens.remove(0); // Remove LEFT_BRACE
+
+        while (!tokens.isEmpty()) {
+            Token currentToken = tokens.get(0);
+
+            if (currentToken.getType() == TokenType.RIGHT_BRACE) {
+                tokens.remove(0);
+                break;
+            }
+
+            if (currentToken.getType() != TokenType.STRING) {
+                throw new InvalidJsonException("Expected string key, found: " + currentToken.getType());
+            }
+
+            String key = currentToken.getValue();
+            tokens.remove(0);
+
+            if (tokens.isEmpty() || tokens.get(0).getType() != TokenType.COLON) {
+                throw new InvalidJsonException("Expected colon after key");
+            }
+            tokens.remove(0);
+
+            Object value = parseValue();
+            object.put(key, value);
+
+            if (!tokens.isEmpty() && tokens.get(0).getType() == TokenType.COMMA) {
+                tokens.remove(0);
+            }
+        }
+
+        return object;
     }
 
     private List<Object> parseArray() {
-        return null;
+        List<Object> array = new ArrayList<>();
+        tokens.remove(0); // Remove LEFT_BRACKET
+
+        while (!tokens.isEmpty()) {
+            Token currentToken = tokens.get(0);
+
+            if (currentToken.getType() == TokenType.RIGHT_BRACKET) {
+                tokens.remove(0);
+                break;
+            }
+
+            Object value = parseValue();
+            array.add(value);
+
+            if (!tokens.isEmpty() && tokens.get(0).getType() == TokenType.COMMA) {
+                tokens.remove(0);
+            }
+        }
+
+        return array;
     }
 
-    private String parseString() {
-        return null;
+    private Number parseNumber(String value) {
+        try {
+            if (value.contains(".") || value.contains("e") || value.contains("E")) {
+                return Double.parseDouble(value);
+            } else {
+                return Long.parseLong(value);
+            }
+        } catch (NumberFormatException e) {
+            throw new InvalidJsonException("Invalid number format: " + value);
+        }
     }
 
-    private Number parseNumber() {
-        return null;
-    }
-
-    private Boolean parseBoolean() {
-        return null;
-    }
-
-    private Object parseNull() {
-        return null;
-    }
-
-    // index 활용해 현재 위치가 whitespace 이면 index++;
-    private void skipWhitespace() {
-    }
-
-    // 해당 토큰에서 다음에 기대되는 char는 Token에 정의한다.
-    private boolean expect(char expected) {
-        return false;
-    }
-
-    // 매 토큰마다 검사
-    private boolean isEndOfString() {
-        return false;
+    private Boolean parseBoolean(String value) {
+        if (value.equals("true")) {
+            return true;
+        } else if (value.equals("false")) {
+            return false;
+        } else {
+            throw new InvalidJsonException("Invalid boolean value: " + value);
+        }
     }
 }
