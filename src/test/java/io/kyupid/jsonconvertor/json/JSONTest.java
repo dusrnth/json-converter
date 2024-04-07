@@ -134,8 +134,7 @@ class JSONTest {
     @DisplayName("유효하지 않은 JSON 문자열 파싱 테스트")
     void testParseInvalidJson() {
         String json = "{\"name\":\"John\",\"age\":30,\"city\":\"New York\"";
-        JSON jsonParser = new JSON(json);
-        assertThatThrownBy(jsonParser::parse)
+        assertThatThrownBy(() -> new JSON(json))
                 .isInstanceOf(InvalidJsonException.class);
     }
 
@@ -143,8 +142,7 @@ class JSONTest {
     @DisplayName("유효하지 않은 숫자 파싱 테스트")
     void testParseInvalidNumber() {
         String json = "123abc";
-        JSON jsonParser = new JSON(json);
-        assertThatThrownBy(jsonParser::parse)
+        assertThatThrownBy(() -> new JSON(json))
                 .isInstanceOf(InvalidJsonException.class);
     }
 
@@ -152,8 +150,7 @@ class JSONTest {
     @DisplayName("유효하지 않은 불리언 파싱 테스트")
     void testParseInvalidBoolean() {
         String json = "tru";
-        JSON jsonParser = new JSON(json);
-        assertThatThrownBy(jsonParser::parse)
+        assertThatThrownBy(() -> new JSON(json))
                 .isInstanceOf(InvalidJsonException.class);
     }
 
@@ -161,8 +158,7 @@ class JSONTest {
     @DisplayName("유효하지 않은 null 파싱 테스트")
     void testParseInvalidNull() {
         String json = "nul";
-        JSON jsonParser = new JSON(json);
-        assertThatThrownBy(jsonParser::parse)
+        assertThatThrownBy(() -> new JSON(json))
                 .isInstanceOf(InvalidJsonException.class);
     }
 }
