@@ -40,6 +40,10 @@ public class CSV {
         return headers;
     }
 
+    public List<List<String>> getRows() {
+        return rows;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
