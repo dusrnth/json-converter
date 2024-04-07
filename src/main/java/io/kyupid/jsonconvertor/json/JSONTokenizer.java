@@ -3,10 +3,10 @@ package io.kyupid.jsonconvertor.json;
 import io.kyupid.jsonconvertor.exception.InvalidJsonException;
 import io.kyupid.jsonconvertor.json.token.Token;
 import io.kyupid.jsonconvertor.json.token.TokenType;
-import io.kyupid.jsonconvertor.json.token.TokenUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 class JSONTokenizer {
     private final String json;
@@ -19,20 +19,29 @@ class JSONTokenizer {
 
     List<Token> tokenize() {
         List<Token> tokens = new ArrayList<>();
+        Stack<Character> bracketStack = new Stack<>();
 
         while (pos < json.length()) {
             char currentChar = json.charAt(pos);
 
             if (currentChar == '{') {
+                bracketStack.push(currentChar);
                 tokens.add(new Token(TokenType.LEFT_BRACE, null, null));
                 pos++;
             } else if (currentChar == '}') {
+                if (bracketStack.isEmpty() || bracketStack.pop() != '{') {
+                    throw new InvalidJsonException("Mismatched brackets");
+                }
                 tokens.add(new Token(TokenType.RIGHT_BRACE, null, null));
                 pos++;
             } else if (currentChar == '[') {
+                bracketStack.push(currentChar);
                 tokens.add(new Token(TokenType.LEFT_BRACKET, null, null));
                 pos++;
             } else if (currentChar == ']') {
+                if (bracketStack.isEmpty() || bracketStack.pop() != '[') {
+                    throw new InvalidJsonException("Mismatched brackets");
+                }
                 tokens.add(new Token(TokenType.RIGHT_BRACKET, null, null));
                 pos++;
             } else if (currentChar == ':') {
@@ -59,6 +68,10 @@ class JSONTokenizer {
             } else {
                 throw new InvalidJsonException("Unexpected character: " + currentChar);
             }
+        }
+
+        if (!bracketStack.isEmpty()) {
+            throw new InvalidJsonException("Unterminated brackets");
         }
 
         return tokens;

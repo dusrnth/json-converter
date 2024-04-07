@@ -124,6 +124,7 @@ class JSONTokenizerTest {
         String json = "{\"name\":\"John\",\"age\":30,\"city\":\"New York\"";
         JSONTokenizer tokenizer = new JSONTokenizer(json);
         assertThatThrownBy(tokenizer::tokenize)
+                .hasMessage("Unterminated brackets")
                 .isInstanceOf(InvalidJsonException.class);
     }
 
