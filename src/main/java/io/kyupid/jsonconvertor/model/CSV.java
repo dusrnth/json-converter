@@ -30,6 +30,19 @@ public class CSV {
         rows.add(row);
     }
 
+    public void addRow(List<String> data) {
+        if (data.size() != headers.size()) {
+            throw new IllegalArgumentException("데이터의 개수가 헤더의 개수와 일치하지 않습니다.");
+        }
+
+        List<String> row = new ArrayList<>();
+        for (String cell : data) {
+            String escapedCell = escapeSpecialCharacters(cell);
+            row.add(escapedCell);
+        }
+        rows.add(row);
+    }
+
     private String escapeSpecialCharacters(String cell) {
         if (cell.contains(",") || cell.contains("\"") || cell.contains("\n")) {
             return "\"" + cell.replace("\"", "\"\"") + "\"";

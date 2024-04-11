@@ -61,12 +61,12 @@ class JsonToCsvConverterTest {
     }
 
     @Test
-    @DisplayName("중첩된 JSON 객체를 입력으로 주었을 때, 중첩된 객체의 키-값 쌍이 무시되고 최상위 객체의 키-값 쌍만 CSV에 포함된다")
-    void convert_NestedJsonObject_IgnoresNestedObjectsAndIncludesTopLevelKeyValuePairs() {
+    @DisplayName("중첩된 JSON 객체를 입력으로 주었을 때, 중첩된 객체의 키-값 쌍이 포함된 CSV가 생성된다")
+    void convert_NestedJsonObject_IncludesNestedObjectsKeyValuePairsInCsv() {
         String jsonString = "{\"name\":\"John\",\"age\":30,\"address\":{\"city\":\"New York\",\"country\":\"USA\"}}";
         CSV csv = JsonToCsvConverter.convert(jsonString);
-        assertThat(csv.getHeaders()).containsExactly("name", "age", "address");
-        assertThat(csv.getRows()).containsExactly(List.of("John", "30", "{\"city\":\"New York\",\"country\":\"USA\"}"));
+        assertThat(csv.getHeaders()).containsExactly("name", "age", "address.city", "address.country");
+        assertThat(csv.getRows()).containsExactly(List.of("John", "30", "New York", "USA"));
     }
 
     @Test
