@@ -3,8 +3,7 @@ package io.kyupid.jsonconvertor.converter;
 import io.kyupid.jsonconvertor.json.JSON;
 import io.kyupid.jsonconvertor.model.CSV;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class JsonToCsvConverter {
     public static CSV convert(String jsonString) {
@@ -26,9 +25,14 @@ public class JsonToCsvConverter {
             return new CSV();
         }
 
-        Map<String, Object> firstItem = (Map<String, Object>) jsonArray.get(0);
-        CSV csv = new CSV(firstItem.keySet().toArray(new String[0]));
+        Set<String> headers = new LinkedHashSet<>();
+        for (Object item : jsonArray) {
+            if (item instanceof Map) {
+                headers.addAll(((Map<String, Object>) item).keySet());
+            }
+        }
 
+        CSV csv = new CSV(headers);
         for (Object item : jsonArray) {
             if (item instanceof Map) {
                 addJsonMapToCsvRow((Map<String, Object>) item, csv);

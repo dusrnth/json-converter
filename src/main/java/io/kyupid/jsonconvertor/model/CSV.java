@@ -3,6 +3,7 @@ package io.kyupid.jsonconvertor.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class CSV {
     private final List<String> headers;
@@ -10,6 +11,10 @@ public class CSV {
 
     public CSV(String... headers) {
         this.headers = Arrays.asList(headers);
+    }
+
+    public CSV(Set<String> headers) {
+        this.headers = new ArrayList<>(headers);
     }
 
     public void addRow(String... data) {
