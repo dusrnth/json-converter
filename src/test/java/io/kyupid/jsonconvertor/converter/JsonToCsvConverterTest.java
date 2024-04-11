@@ -70,14 +70,33 @@ class JsonToCsvConverterTest {
     }
 
     @Test
-    @DisplayName("JSON 배열 내부에 중첩된 JSON 객체가 포함된 경우, 중첩된 객체의 키-값 쌍이 무시되고 최상위 객체의 키-값 쌍만 CSV에 포함된다")
-    void convert_JsonArrayWithNestedObjects_IgnoresNestedObjectsAndIncludesTopLevelKeyValuePairs() {
-        String jsonString = "[{\"name\":\"John\",\"age\":30,\"address\":{\"city\":\"New York\",\"country\":\"USA\"}},{\"name\":\"Jane\",\"age\":25,\"address\":{\"city\":\"London\",\"country\":\"UK\"}}]";
+    @DisplayName("JSON 배열 내부에 중첩된 JSON 객체가 포함된 경우, 중첩된 객체의 키-값 쌍이 CSV에 포함된다")
+    void convert_JsonArrayWithNestedObjects_IncludesNestedObjectsKeyValuePairsInCsv() {
+        String jsonString = """
+                [
+                  {
+                    "name": "John",
+                    "age": 30,
+                    "address": {
+                      "city": "New York",
+                      "country": "USA"
+                    }
+                  },
+                  {
+                    "name": "Jane",
+                    "age": 25,
+                    "address": {
+                      "city": "London",
+                      "country": "UK"
+                    }
+                  }
+                ]
+                """;
         CSV csv = JsonToCsvConverter.convert(jsonString);
-        assertThat(csv.getHeaders()).containsExactly("name", "age", "address");
+        assertThat(csv.getHeaders()).containsExactly("name", "age", "address.city", "address.country");
         assertThat(csv.getRows()).containsExactly(
-                List.of("John", "30", "{\"city\":\"New York\",\"country\":\"USA\"}"),
-                List.of("Jane", "25", "{\"city\":\"London\",\"country\":\"UK\"}")
+                List.of("John", "30", "New York", "USA"),
+                List.of("Jane", "25", "London", "UK")
         );
     }
 
