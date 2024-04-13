@@ -1,45 +1,92 @@
+# JSON Converter
 
-### 요구사항 분석
-1. 기능적:
-    - JSON 형식의 데이터를 입력받아 CSV 형식으로 변환한다.
-    - 변환된 CSV 데이터를 사용자가 다운로드할 수 있도록 한다.
-    - 브라우저에서 실행 가능한 웹 애플리케이션 형태로 제공한다.
+JSON Converter는 JSON 데이터를 CSV 또는 다양한 포맷 형식으로 변환하는 Spring Boot 애플리케이션입니다.
 
-2. 비기능적:
-    - 사용자 친화적인 인터페이스를 제공하여 쉽게 사용할 수 있어야 한다.
-    - 대용량의 JSON 데이터도 안정적으로 처리할 수 있어야 한다.
-    - 오류 발생 시 사용자에게 적절한 피드백을 제공해야 한다.
+**지원 현황:**
+- [x] CSV
+- [ ] Excel
+- [ ] ...
+
+## 실행 준비 사항
+
+- Java 17 이상
+- Docker
+- Gradle
+
+## 애플리케이션 실행
+
+1. 프로젝트 클론
+   ```
+   git clone https://github.com/yourusername/json-converter.git
+   cd json-converter
+   ```
+
+2. 스크립트에 실행 권한을 부여
+   ```
+   chmod +x run.sh
+   ```
+
+3. 스크립트를 실행
+   ```
+   ./run.sh
+   ```
+
+4. 메뉴에서 원하는 작업 선택
+   - 1: 시작
+   - 2: 재시작
+   - 3: 중지
+   - 4: 상태 확인
+   - 9: 전체 Clean 빌드 및 시작
+
+5. 애플리케이션 사용:
+   웹 브라우저에서 `http://localhost:8080`에 접속하여 JSON Converter 애플리케이션을 사용할 수 있습니다.
+
+## 기능 및 설계
+
+### 요구사항
+
+1. 기능적 요구사항:
+   - JSON 데이터를 CSV로 변환
+   - 변환된 CSV 데이터 다운로드 기능 제공
+   - 웹 애플리케이션 형태로 제공
+
+2. 비기능적 요구사항:
+   - 사용자 친화적인 인터페이스
+   - 대용량 JSON 데이터 안정적 처리
+   - 오류 발생 시 적절한 피드백 제공
 
 ### 설계
+
 1. 아키텍처:
-    - 클라이언트-서버 아키텍처를 사용한다.
-    - 클라이언트는 웹 브라우저에서 실행되며, 사용자 인터페이스를 담당한다.
-    - 서버는 JSON 데이터를 받아 CSV로 변환하고, 변환된 데이터를 클라이언트에게 전달한다.
+   - 클라이언트-서버 아키텍처 사용
+   - 클라이언트: 웹 브라우저에서 실행, 사용자 인터페이스 담당
+   - 서버: JSON 데이터 받아 CSV로 변환, 변환된 데이터 클라이언트에 전달
 
 2. 사용자 인터페이스:
-    - 메인 화면에는 JSON 데이터를 입력할 수 있는 텍스트 영역과 변환 버튼이 있다.
-    - 변환 버튼을 클릭하면 서버로 JSON 데이터를 전송하고, 변환된 CSV 데이터를 다운로드 받을 수 있다.
-    - 오류 발생 시 사용자에게 알림 메시지를 표시한다.
+   - 메인 화면: JSON 데이터 입력 텍스트 영역, 변환 버튼
+   - 변환 버튼 클릭 시 서버로 JSON 데이터 전송, 변환된 CSV 데이터 다운로드
+   - 오류 발생 시 알림 메시지 표시
 
 3. 서버:
-    - JSON 데이터를 받아 CSV로 변환하는 API 엔드포인트를 제공한다.
-    - JSONParser를 사용하여 받은 JSON 데이터를 파싱한다.
-    - JsonToCsvConverter를 사용하여 파싱된 데이터를 CSV 형식으로 변환한다.
-    - 변환된 CSV 데이터를 응답으로 반환하고, 다운로드할 수 있도록 처리한다.
+   - JSON 데이터를 CSV로 변환하는 API 엔드포인트 제공
+   - JSONParser로 받은 JSON 데이터 파싱
+   - JsonToCsvConverter로 파싱된 데이터 CSV 형식으로 변환
+   - 변환된 CSV 데이터 응답으로 반환, 다운로드 가능하도록 처리
 
 4. 데이터 흐름:
-    - 사용자가 JSON 데이터를 입력하고 변환 버튼을 클릭한다.
-    - 클라이언트는 입력된 JSON 데이터를 서버의 API 엔드포인트로 전송한다.
-    - 서버에서는 JSONParser를 사용하여 JSON 데이터를 파싱한다.
-    - 파싱된 데이터는 JsonToCsvConverter를 통해 CSV 형식으로 변환된다.
-    - 변환된 CSV 데이터는 응답으로 클라이언트에게 전달된다.
-    - 클라이언트는 받은 CSV 데이터를 다운로드 가능한 형태로 사용자에게 제공한다.
+   - 사용자 JSON 데이터 입력 및 변환 버튼 클릭
+   - 클라이언트 입력된 JSON 데이터 서버 API 엔드포인트로 전송
+   - 서버 JSONParser로 JSON 데이터 파싱
+   - 파싱된 데이터 JsonToCsvConverter로 CSV 형식 변환
+   - 변환된 CSV 데이터 응답으로 클라이언트에 전달
+   - 클라이언트 받은 CSV 데이터 다운로드 가능한 형태로 사용자에게 제공
 
 5. 오류 처리:
-    - JSON 데이터 파싱 중 오류 발생 시 적절한 오류 메시지를 사용자에게 표시한다.
-    - 서버 내부 오류 발생 시 사용자에게 알림 메시지를 표시하고, 오류 로그를 기록한다.
+   - JSON 데이터 파싱 오류 시 적절한 오류 메시지 사용자에게 표시
+   - 서버 내부 오류 시 사용자에게 알림 메시지 표시, 오류 로그 기록
 
 ### 참고
-- https://www.json.org/json-ko.html
-- https://developer.mozilla.org/ko/docs/Learn/JavaScript/Objects/JSON
-- https://github.com/stleary/JSON-java
+
+- [JSON (JavaScript Object Notation)](https://www.json.org/json-ko.html)
+- [JSON에 대해 알아보기 - Mozilla ](https://developer.mozilla.org/ko/docs/Learn/JavaScript/Objects/JSON)
+- [JSON-java 라이브러리 - Github](https://github.com/stleary/JSON-java)
