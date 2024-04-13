@@ -16,7 +16,11 @@ public class ConverterFactory {
     @Autowired
     public ConverterFactory(List<Converter<?>> converters) {
         this.converters = converters.stream()
-                .collect(Collectors.toMap(converter -> converter.getClass().getAnnotation(Component.class).value(),
+                .collect(Collectors.toMap(converter -> {
+                    Component component = converter.getClass().getAnnotation(Component.class);
+                    if (component == null) throw new IllegalStateException("Component annotation missing on converter class");
+                    return component.value();
+                },
                         Function.identity()));
     }
 
