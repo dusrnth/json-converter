@@ -22,6 +22,8 @@ public class ConverterFactory {
 
     @SuppressWarnings("unchecked")
     public <T> Converter<T> getConverter(ConverterType converterType) {
-        return (Converter<T>) converters.get(converterType.getConverterName());
+        Converter<?> converter = converters.get(converterType.getConverterName());
+        if (converter == null) throw new IllegalArgumentException("No converter found for type: " + converterType);
+        return (Converter<T>) converter;
     }
 }
