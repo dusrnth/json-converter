@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SimpleJsonToCsvConverterTest {
 
-    JsonToCsvConverter converter = SimpleJsonToCsvConverter.getInstance();
+    Converter<CSV> converter = SimpleJsonToCsvConverter.getInstance();
 
     @Test
     @DisplayName("빈 JSON 배열을 입력으로 주었을 때, 빈 CSV가 반환된다")

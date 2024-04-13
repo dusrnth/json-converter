@@ -6,7 +6,7 @@ import io.kyupid.jsonconvertor.model.CSV;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class SimpleJsonToCsvConverter implements JsonToCsvConverter {
+public class SimpleJsonToCsvConverter implements Converter<CSV> {
 
     private static final SimpleJsonToCsvConverter converter = new SimpleJsonToCsvConverter();
 
