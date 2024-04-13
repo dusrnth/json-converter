@@ -48,31 +48,56 @@
     </style>
 </head>
 <body>
-<h1>JSON to CSV Converter</h1>
+<h1>JSON Converter</h1>
 <div class="container">
     <div class="input-box">
         <h3>JSON Input</h3>
         <form method="post" action="/convert">
             <textarea name="json" placeholder="Enter JSON here"></textarea>
             <div class="convert-button">
-                <button type="submit">Convert to CSV</button>
+                <label for="converterType">Converter Type:</label>
+                <select name="converterType" id="converterType">
+                    <option value="ADVANCED_JSON_TO_CSV">Advanced JSON to CSV</option>
+                    <option value="SIMPLE_JSON_TO_CSV">Simple JSON to CSV</option>
+                    <option value="ADVANCED_JSON_TO_EXCEL">Advanced JSON to Excel</option>
+                    <option value="SIMPLE_JSON_TO_EXCEL">Simple JSON to Excel</option>
+                </select>
+                <button type="submit">Convert</button>
             </div>
         </form>
     </div>
     <div class="output-box">
-        <h3>CSV Output</h3>
-        <table th:if="${csv}">
-            <thead>
-            <tr>
-                <th th:each="header : ${csv.headers}" th:text="${header}"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="row : ${csv.rows}">
-                <td th:each="cell : ${row}" th:text="${cell}"></td>
-            </tr>
-            </tbody>
-        </table>
+        <h3>Output</h3>
+        <div th:if="${csv}">
+            <h4>CSV Output</h4>
+            <table>
+                <thead>
+                <tr>
+                    <th th:each="header : ${csv.headers}" th:text="${header}"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="row : ${csv.rows}">
+                    <td th:each="cell : ${row}" th:text="${cell}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:if="${excel}">
+            <h4>Excel Output</h4>
+            <table>
+                <thead>
+                <tr>
+                    <th th:each="header : ${excel.headers}" th:text="${header}"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="row : ${excel.rows}">
+                    <td th:each="cell : ${row}" th:text="${cell}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
         <div class="error" th:if="${error}" th:text="${error}"></div>
     </div>
 </div>

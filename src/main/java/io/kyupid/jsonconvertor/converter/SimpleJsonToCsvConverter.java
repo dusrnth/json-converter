@@ -2,10 +2,12 @@ package io.kyupid.jsonconvertor.converter;
 
 import io.kyupid.jsonconvertor.json.JSON;
 import io.kyupid.jsonconvertor.model.CSV;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Component("simpleJsonToCsvConverter")
 public class SimpleJsonToCsvConverter implements Converter<CSV> {
 
     private static final SimpleJsonToCsvConverter converter = new SimpleJsonToCsvConverter();
