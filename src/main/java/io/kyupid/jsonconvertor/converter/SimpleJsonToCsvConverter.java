@@ -6,8 +6,20 @@ import io.kyupid.jsonconvertor.model.CSV;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class SimpleJsonToCsvConverter {
-    public static CSV convert(String jsonString) {
+public class SimpleJsonToCsvConverter implements JsonToCsvConverter {
+
+    private static final SimpleJsonToCsvConverter converter = new SimpleJsonToCsvConverter();
+
+
+    private SimpleJsonToCsvConverter() {
+    }
+
+    public static SimpleJsonToCsvConverter getInstance() {
+        return converter;
+    }
+
+    @Override
+    public CSV convert(String jsonString) {
         JSON json = new JSON(jsonString);
         Object parsedJson = json.parse();
 

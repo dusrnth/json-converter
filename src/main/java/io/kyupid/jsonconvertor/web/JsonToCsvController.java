@@ -1,5 +1,6 @@
 package io.kyupid.jsonconvertor.web;
 
+import io.kyupid.jsonconvertor.converter.JsonToCsvConverter;
 import io.kyupid.jsonconvertor.converter.SimpleJsonToCsvConverter;
 import io.kyupid.jsonconvertor.model.CSV;
 import org.springframework.stereotype.Controller;
@@ -19,7 +20,8 @@ public class JsonToCsvController {
     @PostMapping("/convert")
     public String convert(@RequestParam("json") String json, Model model) {
         try {
-            CSV csv = SimpleJsonToCsvConverter.convert(json);
+            JsonToCsvConverter converter = SimpleJsonToCsvConverter.getInstance();
+            CSV csv = converter.convert(json);
             model.addAttribute("csv", csv);
         } catch (Exception e) {
             model.addAttribute("error", "JSON 변환 중 오류가 발생했습니다: " + e.getMessage());
