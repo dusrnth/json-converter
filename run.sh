@@ -23,8 +23,7 @@ start() {
             exit 1
         fi
 
-        ./gradlew build
-        if [ $? -ne 0 ]; then
+        if ! ./gradlew build; then
             echo "빌드에 실패하였습니다. 로그를 확인해주세요."
             exit 1
         fi
