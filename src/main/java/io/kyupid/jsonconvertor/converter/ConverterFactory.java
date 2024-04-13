@@ -1,0 +1,27 @@
+package io.kyupid.jsonconvertor.converter;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+@Component
+public class ConverterFactory {
+
+    private final Map<String, Converter<?>> converters;
+
+    @Autowired
+    public ConverterFactory(List<Converter<?>> converters) {
+        this.converters = converters.stream()
+                .collect(Collectors.toMap(converter -> converter.getClass().getAnnotation(Component.class).value(),
+                        Function.identity()));
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> Converter<T> getConverter(ConverterType converterType) {
+        return (Converter<T>) converters.get(converterType.getConverterName());
+    }
+}
