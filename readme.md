@@ -41,7 +41,7 @@ JSON Converter는 JSON 데이터를 CSV 또는 다양한 포맷 형식으로 변
 5. 애플리케이션 사용:
    웹 브라우저에서 `http://localhost:8080`에 접속하여 JSON Converter 애플리케이션을 사용할 수 있습니다.
 
-![2024-04-13_19-11-53](https://github.com/dusrnth/json-converter/assets/59721293/5f294556-c2f0-4e07-ad9a-dc1354b14a76)
+<img width="1671" alt="Screenshot 2024-04-17 at 9 35 21 PM" src="https://github.com/dusrnth/json-converter/assets/59721293/366d40e3-11e9-4d58-9687-aa7e6169fdec">
 
 ## 기능 및 설계
 
