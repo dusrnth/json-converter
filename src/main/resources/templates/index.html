@@ -57,17 +57,21 @@
             <div class="convert-button">
                 <label for="converterType">Converter Type:</label>
                 <select name="converterType" id="converterType">
-                    <option value="ADVANCED_JSON_TO_CSV">Advanced JSON to CSV</option>
                     <option value="SIMPLE_JSON_TO_CSV">Simple JSON to CSV</option>
-                    <option value="ADVANCED_JSON_TO_EXCEL">Advanced JSON to Excel</option>
-                    <option value="SIMPLE_JSON_TO_EXCEL">Simple JSON to Excel</option>
+                    <option value="ADVANCED_JSON_TO_CSV">지원예정Advanced JSON to CSV</option>
+                    <option value="SIMPLE_JSON_TO_EXCEL">지원예정Simple JSON to Excel</option>
+                    <option value="ADVANCED_JSON_TO_EXCEL">지원예정Advanced JSON to Excel</option>
                 </select>
                 <button type="submit">Convert</button>
             </div>
         </form>
     </div>
     <div class="output-box">
-        <h3>Output</h3>
+        <div class="output-header">
+            <h3>Output</h3>
+            <a th:if="${csv}" th:href="'data:text/csv;charset=utf-8,' + ${#uris.escapeQueryParam(csv.toString())}" download="output.csv" class="download-button">Download CSV</a>
+            <a th:if="${excel}" th:href="'data:application/vnd.ms-excel;charset=utf-8,' + ${#uris.escapeQueryParam(excel.toString())}" download="output.xlsx" class="download-button">Download Excel</a>
+        </div>
         <div th:if="${csv}">
             <h4>CSV Output</h4>
             <table>
